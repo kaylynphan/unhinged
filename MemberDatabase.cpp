@@ -12,7 +12,12 @@ MemberDatabase::MemberDatabase() {
 }
 
 MemberDatabase::~MemberDatabase() {
-    // we may have to do nothing here
+    map<string, PersonProfile*>::iterator it = m_database.begin();
+    while (it != m_database.end()) {
+        delete it->second;
+        it++;
+    }
+    m_database.clear();
 }
 
 bool MemberDatabase::LoadDatabase(string filename) {
@@ -20,8 +25,7 @@ bool MemberDatabase::LoadDatabase(string filename) {
     if (!infile) {
         return false;
     }
-    bool keepReading = true;
-    while (keepReading) {
+    while (true) {
         string name;
         getline(infile, name);
         string email;
@@ -44,7 +48,9 @@ bool MemberDatabase::LoadDatabase(string filename) {
         }
         m_database.insert(pair<string, PersonProfile*>(email, toAdd));
         string emptyLine;
-        keepReading = getline(infile, emptyLine);
+        if (!getline(infile, emptyLine)) {
+            break;
+        }
     }
     return true;
 }
