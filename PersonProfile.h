@@ -14,6 +14,8 @@ class PersonProfile {
         void AddAttValPair(const AttValPair& attval);
         int GetNumAttValPairs() const;
         bool GetAttVal(int attribute_num, AttValPair& attval) const;
+        //MOVE THIS TO PRIVATE WHEN DONE USING
+        const string toString();
     private:
         string m_name;
         string m_email;
