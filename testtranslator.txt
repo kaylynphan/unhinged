@@ -1,0 +1,10 @@
+trait,transparent,trait,transparent
+job,chef,hobby,eating
+job,writer,job,janitor
+trait,regretful,job,curator
+trait,anxious,hobby,hiking
+job,psychologist,job,chef
+job,salesperson,hobby,poetry
+trait,meretricious,hobby,improv
+job,writer,hobby,sewing
+trait,disruptive,hobby,canyoneering

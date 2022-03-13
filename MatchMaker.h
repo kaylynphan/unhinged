@@ -17,3 +17,5 @@ class MatchMaker {
         AttributeTranslator m_at;
 
 };
+
+#endif
