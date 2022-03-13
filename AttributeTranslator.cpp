@@ -35,13 +35,13 @@ bool AttributeTranslator::Load(string filename) {
         if ((att1 != "") && (att2 != "") && (val1 != "") && (val2 != "")) {
             AttValPair avPair1(att1, val1);
             AttValPair avPair2(att2, val2);
-            map<AttValPair, vector<AttValPair>>::iterator it = m_translations.find(avPair1);
+            map<AttValPair, vector<AttValPair> >::iterator it = m_translations.find(avPair1);
             if (it != m_translations.end()) {
                 it->second.push_back(avPair2);
             } else {
                 vector<AttValPair> newvector;
                 newvector.push_back(avPair2);
-                m_translations.insert(pair<AttValPair, vector<AttValPair>>(avPair1, newvector));
+                m_translations.insert(pair<AttValPair, vector<AttValPair> >(avPair1, newvector));
             }
         } else {
             cout << "Incomplete line" << endl;
@@ -57,7 +57,7 @@ vector<AttValPair> AttributeTranslator::FindCompatibleAttValPairs(const AttValPa
 
 string AttributeTranslator::toString() {
     string result = "";
-    map<AttValPair, vector<AttValPair>>::iterator it = m_translations.begin();
+    map<AttValPair, vector<AttValPair> >::iterator it = m_translations.begin();
     while (it != m_translations.end()) {
         result += "Source:\n" + it->first.attribute + ": " + it->first.value + "\n";
         result += "Matches\n";

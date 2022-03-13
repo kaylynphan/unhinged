@@ -16,7 +16,7 @@ class AttributeTranslator {
         // MOVE TO PRIVATE WHEN DONE USING
         std::string toString();
     private:
-        map<AttValPair, vector<AttValPair>> m_translations;
+        map<AttValPair, vector<AttValPair> > m_translations;
 };
 
 #endif
