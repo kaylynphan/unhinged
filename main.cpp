@@ -61,7 +61,7 @@ bool findMatches(const MemberDatabase& mdb, const AttributeTranslator& at)
       // Prompt user for threshold
     int threshold;
     std::cout << "How many shared attributes must matches have? ";
-    std::cin >> threshold;
+    std::cin > > threshold;
     std::cin.ignore(10000, '\n'); 
 
       // Print matches and the number of matching translated attributes

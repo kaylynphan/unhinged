@@ -2,9 +2,9 @@
 #define _MEMBER_DATABASE_H_
 
 #include "provided.h"
+#include "RadixTree.h"
 #include "PersonProfile.h"
 #include <vector>
-#include <map> //get rid of this later
 
 using namespace std;
 
@@ -18,10 +18,12 @@ class MemberDatabase {
         const PersonProfile* GetMemberByEmail(string email) const;
         // MOVE THIS TO PRIVATE WHEN DONE
         const string toString();
-        
     private:
-        map<string, PersonProfile*> m_database;
-        // maps emails to PersonProfiles
+        // maps emails (string) to Profiles
+        RadixTree<PersonProfile*>* m_userDatabase;
+        // for TRAIT: maps value (string) to emails ()
+        RadixTree<set<string>*>* m_usersWithAttValPair;
+        void addToAttributeSet(AttValPair attValPair, string email);
 };
 
 #endif

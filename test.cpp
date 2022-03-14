@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-    /*
+    
     MemberDatabase mdb;
     if (!mdb.LoadDatabase("testmembers.txt"))
     {
@@ -14,8 +14,8 @@ int main() {
     } else {
         cout << mdb.toString() << endl;
     }
-    */
-
+    
+    /*
     AttributeTranslator at;
     if (!at.Load("testtranslator.txt"))
     {
@@ -24,4 +24,5 @@ int main() {
     } else {
         cout << at.toString() << endl;
     }
+    */
 }

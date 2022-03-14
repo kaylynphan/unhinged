@@ -1,6 +1,7 @@
 #include "provided.h"
+#include "RadixTree.h"
 #include "MemberDatabase.h"
-#include <map> //get rid of this later
+#include <set> 
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,16 +9,24 @@
 using namespace std;
 
 MemberDatabase::MemberDatabase() {
-    // we may have to do nothing here
+    m_userDatabase = new RadixTree<PersonProfile*>();
+    m_usersWithAttValPair = new RadixTree<set<string>*>;
 }
 
 MemberDatabase::~MemberDatabase() {
-    map<string, PersonProfile*>::iterator it = m_database.begin();
-    while (it != m_database.end()) {
-        delete it->second;
-        it++;
+    delete m_userDatabase;
+    delete m_usersWithAttValPair;
+}
+
+void MemberDatabase::addToAttributeSet(AttValPair attValPair, string email) {
+    //string key will be "attribute, value"
+    string key = attValPair.attribute + ", " + attValPair.value;
+    set<string>** emailSet = m_usersWithAttValPair->search(key);
+    if (emailSet == nullptr) {
+        m_usersWithAttValPair->insert(key, new set<string>());
+        emailSet = m_usersWithAttValPair->search(key);
     }
-    m_database.clear();
+    (*emailSet)->insert(email);
 }
 
 bool MemberDatabase::LoadDatabase(string filename) {
@@ -34,7 +43,7 @@ bool MemberDatabase::LoadDatabase(string filename) {
         string line;
         getline(infile, line);
         istringstream iss(line);
-        PersonProfile* toAdd = new PersonProfile(name, email);
+        PersonProfile* toAdd = new PersonProfile(name, email, numAVPairs);
         iss >> numAVPairs;
         iss.ignore(1000, '\n');
         for (int i = 0; i < numAVPairs; i++) {
@@ -43,10 +52,13 @@ bool MemberDatabase::LoadDatabase(string filename) {
             string att;
             string val;
             getline(iss, att, ',');
-            getline(iss, val, ',');
-            toAdd->AddAttValPair(AttValPair(att, val));
+            getline(iss, val);
+            AttValPair avpair(att, val);
+            toAdd->AddAttValPair(avpair);
+            addToAttributeSet(avpair, email);
         }
-        m_database.insert(pair<string, PersonProfile*>(email, toAdd));
+        // add <email, Profile> to database
+        m_userDatabase->insert(email, toAdd);
         string emptyLine;
         if (!getline(infile, emptyLine)) {
             break;
@@ -57,23 +69,27 @@ bool MemberDatabase::LoadDatabase(string filename) {
 
 vector<string> MemberDatabase::FindMatchingMembers(const AttValPair& input) const {
     vector<string> result;
+    string key = input.attribute + ", " + input.value;
+    set<string>** emailSet = m_usersWithAttValPair->search(key);
+    if (emailSet != nullptr) {
+        for (auto it = (**emailSet).begin(); it != (**emailSet).end(); it++) {
+            result.push_back(*it);
+        }
+    } 
     return result;
 }
 
 const PersonProfile* MemberDatabase::GetMemberByEmail(string email) const {
-    return (m_database.find(email))->second;
+    return *(m_userDatabase->search(email));
 }
 
 //prints the whole database
 const string MemberDatabase::toString() {
-    map<string, PersonProfile*>::iterator it = m_database.begin();
     string result = "";
-    while (it != m_database.end()) {
-        result += "Key: " + it->first + '\n';
-        result += "Value:\n";
-        // print the PersonProfile
-        result += (it->second)->toString();
-        it++;
+    map<string, PersonProfile**> mp = m_userDatabase->getMap();
+    for (auto it = mp.begin(); it != mp.end(); it++) {
+        result += it->first + '\n';
+        result += (*(it->second))->toString();
     }
     return result;
 }
