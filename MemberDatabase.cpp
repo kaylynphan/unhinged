@@ -8,11 +8,9 @@ using namespace std;
 
 MemberDatabase::MemberDatabase()
 	: m_profilesRadixTree(new RadixTree<PersonProfile*>), m_attValToEmailRadixTree(new RadixTree<vector<string>*>),
-	m_emailSet(new set<string>), m_attValStringSet(new set<string>)
-{}
+	m_emailSet(new set<string>), m_attValStringSet(new set<string>) {}
 
-MemberDatabase::~MemberDatabase()
-{
+MemberDatabase::~MemberDatabase() {
 	for (set<string>::iterator it = m_emailSet->begin(); it != m_emailSet->end(); it++) {
 		PersonProfile** pp = m_profilesRadixTree->search(*it);
 		if (pp != nullptr) { //always true
@@ -31,8 +29,7 @@ MemberDatabase::~MemberDatabase()
 	delete m_attValStringSet;
 }
 
-bool MemberDatabase::LoadDatabase(string filename)
-{
+bool MemberDatabase::LoadDatabase(string filename) {
 	ifstream infile(filename);
 	if (!infile) {
 		return false;
@@ -82,8 +79,7 @@ bool MemberDatabase::LoadDatabase(string filename)
 	return true;
 }
 
-vector<string> MemberDatabase::FindMatchingMembers(const AttValPair& input) const
-{
+vector<string> MemberDatabase::FindMatchingMembers(const AttValPair& input) const {
 	string attValKey = input.attribute + input.value;
 	vector<string>** matches = m_attValToEmailRadixTree->search(attValKey);
 	if (matches != nullptr) {
@@ -92,8 +88,7 @@ vector<string> MemberDatabase::FindMatchingMembers(const AttValPair& input) cons
 	return vector<string>();
 }
 
-const PersonProfile* MemberDatabase::GetMemberByEmail(string email) const
-{
+const PersonProfile* MemberDatabase::GetMemberByEmail(string email) const {
 	PersonProfile** profile = m_profilesRadixTree->search(email);
 	if (profile != nullptr) {
 		return *profile;

@@ -7,14 +7,11 @@
 using namespace std;
 
 MatchMaker::MatchMaker(const MemberDatabase& mdb, const AttributeTranslator& at)
-	: m_mdb(&mdb), m_at(&at)
-{}
+	: m_mdb(&mdb), m_at(&at) {}
 
-MatchMaker::~MatchMaker()
-{}
+MatchMaker::~MatchMaker() {}
 
-vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold) const
-{
+vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold) const {
 	//Find PersonProfile associated with Email
 	const PersonProfile* ppOfInterest = m_mdb->GetMemberByEmail(email);
 	
@@ -43,6 +40,5 @@ vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold
 	}
 
 	sort(rankedMatches.begin(), rankedMatches.end(), comp);
-
 	return rankedMatches;
 }

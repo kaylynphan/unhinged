@@ -6,7 +6,7 @@
 
 class AVPairHash {
 public:
-	unsigned int operator()(const AttValPair& av) const;
+	unsigned int operator()(const AttValPair& attval) const;
 };
 
 bool comp(const EmailCount& ec1, const EmailCount& ec2);

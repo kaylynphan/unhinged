@@ -46,13 +46,11 @@ void PersonProfile::AddAttValPair(const AttValPair& attval) {
 	}
 }
 
-int PersonProfile::GetNumAttValPairs() const
-{
+int PersonProfile::GetNumAttValPairs() const {
 	return m_numAVPairs;
 }
 
-bool PersonProfile::GetAttVal(int attribute_num, AttValPair& attval) const
-{
+bool PersonProfile::GetAttVal(int attribute_num, AttValPair& attval) const {
 	if (attribute_num < 0 || attribute_num >= GetNumAttValPairs()) {
 		return false;
 	}

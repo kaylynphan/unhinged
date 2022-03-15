@@ -8,8 +8,7 @@ AttributeTranslator::AttributeTranslator()
 	: m_translationsRadixTree(new RadixTree<vector<AttValPair>*>), m_sources(new set<string>)
 {}
 
-AttributeTranslator::~AttributeTranslator()
-{
+AttributeTranslator::~AttributeTranslator() {
 	for (set<string>::iterator it = m_sources->begin(); it != m_sources->end(); it++) {
 		vector<AttValPair>** compatiblePairsVector = m_translationsRadixTree->search(*it);
 		if (compatiblePairsVector != nullptr) { // always true
@@ -20,8 +19,7 @@ AttributeTranslator::~AttributeTranslator()
 	delete m_sources;
 }
 
-bool AttributeTranslator::Load(string filename)
-{
+bool AttributeTranslator::Load(string filename) {
 	ifstream infile(filename);
 	if (!infile) {
 		return false;
