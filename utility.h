@@ -9,6 +9,8 @@ public:
 	unsigned int operator()(const AttValPair& attval) const;
 };
 
+bool operator<(const EmailCount& a, const EmailCount& b);
+
 bool comp(const EmailCount& ec1, const EmailCount& ec2);
 
 #endif

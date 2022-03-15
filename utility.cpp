@@ -7,7 +7,6 @@ unsigned int AVPairHash::operator()(const AttValPair& attval) const {
 	return str_hash(attval.attribute + attval.value);
 }
 
-
-bool comp(const EmailCount& ec1, const EmailCount& ec2) {
-	return (ec1.count > ec2.count || ((ec1.count == ec2.count) && (ec1.email < ec2.email)));
+bool comp(const EmailCount& a, const EmailCount& b) {
+	return (a.count > b.count || ((a.count == b.count) && (a.email < b.email)));
 }

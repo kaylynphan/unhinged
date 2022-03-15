@@ -68,8 +68,6 @@ bool MemberDatabase::LoadDatabase(string filename) {
 					m_attValStringSet->insert(attValKey);
 				}
                 // because we process each profile once, we can guarantee there will be no duplicate emails here
-                // however, duplicates may appear when a member is matched twice to another member because they are compatible in more than one way
-                // this case will be handled in MatchMaker.cpp
 				(*emailsVector)->push_back(email);
 			}
 			m_profilesRadixTree->insert(email, toAdd);

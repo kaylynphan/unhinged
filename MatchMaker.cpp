@@ -12,33 +12,45 @@ MatchMaker::MatchMaker(const MemberDatabase& mdb, const AttributeTranslator& at)
 MatchMaker::~MatchMaker() {}
 
 vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold) const {
-	//Find PersonProfile associated with Email
-	const PersonProfile* ppOfInterest = m_mdb->GetMemberByEmail(email);
+	const PersonProfile* inputProfile = m_mdb->GetMemberByEmail(email);
 	
-	//Find all compatible AttValPairs for each of PersonProfile's own, set ensures no duplicates
-	unordered_set<AttValPair, AVPairHash> membersToLookFor;
-	for (int i = 0; i != ppOfInterest->GetNumAttValPairs(); i++) {
-		AttValPair avSource;
-		ppOfInterest->GetAttVal(i, avSource);
-		vector<AttValPair> compatiblesVec = m_at->FindCompatibleAttValPairs(avSource);
-		for (vector<AttValPair>::iterator it = compatiblesVec.begin(); it != compatiblesVec.end(); it++) {
-			membersToLookFor.insert(*it);
+	unordered_set<AttValPair, AVPairHash> allCompatiblePairsHashSet;
+    // for each AttValPair in the profile
+	for (int i = 0; i != inputProfile->GetNumAttValPairs(); i++) {
+		AttValPair sourceAttVal;
+		inputProfile->GetAttVal(i, sourceAttVal); // this passes sourceAttVal by reference
+        // obtain a vector of compatible AttValPairs
+		vector<AttValPair> compatiblesToThisSource = m_at->FindCompatibleAttValPairs(sourceAttVal);
+        // compatiblesToThisSource is a vector with compatible AttValPairs obtained from translations
+		for (vector<AttValPair>::iterator it = compatiblesToThisSource.begin(); it != compatiblesToThisSource.end(); it++) {
+            // unordered_set<Object, Hash>::set() takes in an object, hashes it using the Hash, and places it in the right bucket
+			allCompatiblePairsHashSet.insert(*it);
+            // allCompatiblePairsHashSet contains all *UNIQUE* AttValPairs that are compatible with the user's
 		}
 	}
 
-	unordered_map<string, int> emailToMatchCount;
-	for (unordered_set<AttValPair, AVPairHash>::iterator it = membersToLookFor.begin(); it != membersToLookFor.end(); it++) {
-		vector<string> emailsWithMatchingPair = m_mdb->FindMatchingMembers(*it);
-		for (vector<string>::iterator it1 = emailsWithMatchingPair.begin(); it1 != emailsWithMatchingPair.end(); it1++) {
-			if (*it1 != ppOfInterest->GetEmail()) emailToMatchCount[*it1]++;
+    // use a hashmap to map an email(string) to a number of matches(int)
+	unordered_map<string, int> emailsToNumMatchesHashMap;
+    // for each AttValPair to look through
+	for (unordered_set<AttValPair, AVPairHash>::iterator it = allCompatiblePairsHashSet.begin(); it != allCompatiblePairsHashSet.end(); it++) {
+		vector<string> emailsWithThisPair = m_mdb->FindMatchingMembers(*it);
+        // for each email under this AttValPair
+		for (vector<string>::iterator it1 = emailsWithThisPair.begin(); it1 != emailsWithThisPair.end(); it1++) {
+            // make sure you don't match a member with themselves
+            if (*it1 != inputProfile->GetEmail()) {
+                // increase the number of matches
+                emailsToNumMatchesHashMap[*it1]++;
+            }
 		}
 	}
 
 	vector<EmailCount> rankedMatches;
-	for (unordered_map<string, int>::iterator it = emailToMatchCount.begin(); it != emailToMatchCount.end(); it++) {
-		if (it->second >= threshold) rankedMatches.push_back(EmailCount(it->first, it->second));
+	for (unordered_map<string, int>::iterator it = emailsToNumMatchesHashMap.begin(); it != emailsToNumMatchesHashMap.end(); it++) {
+		if (it->second >= threshold) {
+            rankedMatches.push_back(EmailCount(it->first, it->second));
+        }
 	}
-
 	sort(rankedMatches.begin(), rankedMatches.end(), comp);
+
 	return rankedMatches;
 }
