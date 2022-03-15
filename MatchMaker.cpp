@@ -44,6 +44,20 @@ vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold
 		}
 	}
 
+    // a set ensures that matches will be placed in order
+    set<EmailCount> matches;
+    for (unordered_map<string, int>::iterator it = emailsToNumMatchesHashMap.begin(); it != emailsToNumMatchesHashMap.end(); it++) {
+        if (it->second >= threshold) {
+            matches.insert(EmailCount(it->first, it->second));
+        }
+    }
+
+    vector<EmailCount> rankedMatches;
+    for (set<EmailCount>::iterator it = matches.begin(); it != matches.end(); it++) {
+        rankedMatches.push_back(*it);
+    }
+
+    /*
 	vector<EmailCount> rankedMatches;
 	for (unordered_map<string, int>::iterator it = emailsToNumMatchesHashMap.begin(); it != emailsToNumMatchesHashMap.end(); it++) {
 		if (it->second >= threshold) {
@@ -51,6 +65,7 @@ vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold
         }
 	}
 	sort(rankedMatches.begin(), rankedMatches.end(), comp);
+    */
 
 	return rankedMatches;
 }
