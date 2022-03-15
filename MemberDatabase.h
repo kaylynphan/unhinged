@@ -19,9 +19,10 @@ public:
 	const PersonProfile* GetMemberByEmail(string email) const;
 	const string toString();
 private:
-	RadixTree<PersonProfile*>* m_rtreeEmailToProfile;
-	RadixTree<vector<string>*>* m_rtreeAttValToEmails;
-	// had trouble deleting from the RadixTrees, a set helped
+	RadixTree<PersonProfile*>* m_profilesRadixTree;
+    // this is a vector because FindMatchingMember() returns a vector and this is easier
+	RadixTree<vector<string>*>* m_attValToEmailRadixTree;
+	// had trouble deleting from the RadixTrees, a set storing each key helped
 	set<string>* m_emailSet;
 	set<string>* m_attvalSet;
 };
