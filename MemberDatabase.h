@@ -17,7 +17,7 @@ public:
 	bool LoadDatabase(string filename);
 	vector<string> FindMatchingMembers(const AttValPair& input) const;
 	const PersonProfile* GetMemberByEmail(string email) const;
-	const string toString();
+	//const string toString();
 private:
 	RadixTree<PersonProfile*>* m_profilesRadixTree;
     // this is a vector because FindMatchingMember() returns a vector and this is easier

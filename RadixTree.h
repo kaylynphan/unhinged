@@ -26,15 +26,15 @@ struct RadixN {
 
 template <typename ValueType>
 class RadixTree {
-public:
-	RadixTree();
-	~RadixTree();
-	void insert(string key,  ValueType& value);
-	ValueType* search(string key) ;
-private:
-	RadixN<ValueType>* root;
-	void Radix_Insert(RadixN<ValueType>* root, string s,  ValueType& value);
-	RadixN<ValueType>* Radix_Query(RadixN<ValueType>* root, string s);
+	public:
+		RadixTree();
+		~RadixTree();
+		void insert(string key, ValueType& value);
+		ValueType* search(string key) const;
+	private:
+		RadixN<ValueType>* root;
+		void Radix_Insert(RadixN<ValueType>* root, string s,  ValueType& value);
+		RadixN<ValueType>* Radix_Query(RadixN<ValueType>* root, string s) const;
 };
 
 template <typename ValueType>
@@ -95,9 +95,8 @@ void RadixTree<ValueType>::Radix_Insert(RadixN<ValueType>* root, string s, Value
 }
 
 template <typename ValueType>
- ValueType* RadixTree<ValueType>::search(string key) 
-{
-	 RadixN<ValueType>* foundNode = Radix_Query(root, key);
+ValueType* RadixTree<ValueType>::search(string key) const {
+	RadixN<ValueType>* foundNode = Radix_Query(root, key);
 	if(foundNode != nullptr) {
 		 ValueType* ptr = &(foundNode->val);
 		return ptr;
@@ -106,7 +105,7 @@ template <typename ValueType>
 }
 
 template <typename ValueType>
- RadixN<ValueType>* RadixTree<ValueType>::Radix_Query(RadixN<ValueType>* root, string s) {
+ RadixN<ValueType>* RadixTree<ValueType>::Radix_Query(RadixN<ValueType>* root, string s) const {
 	if (s.empty()) {
 		return (root->endmark) ? root : nullptr;
 	}

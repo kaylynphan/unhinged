@@ -14,6 +14,8 @@ bool operator<(const EmailCount& a, const EmailCount& b) {
     return (a.count > b.count || ((a.count == b.count) && (a.email < b.email)));
 } 
 
+/*
 bool comp(const EmailCount& a, const EmailCount& b) {
 	return (a.count > b.count || ((a.count == b.count) && (a.email < b.email)));
 }
+*/
