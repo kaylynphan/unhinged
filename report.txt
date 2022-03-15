@@ -3,9 +3,18 @@ CS32 Winter 22
 Project 4 Report
 
 I was able to finish all of the project.
-I did not use any banned STL components
-you were unable to finish
-use banned STL components (since you didn’t have time to finish an implementation
-that doesn't use them)
-20
-have bugs that you have not yet been able to find/fix
+I did not use any banned STL components.
+I don't have any bugs that I wasn't able to fix (at least I don't think so).
+
+How I tested each class:
+
+For the PersonProfile, AttributeTranslator, and MemberDatabase classes, I created
+toString() methods that would print out the contents of my data structures.
+I first tried making PersonProfiles manually in the command line and seeing if
+its information was being stored correctly. For MemberDatabase's collection
+of members and AttributeTranslator's collection of AttValPairs, I made text files
+testmembers.txt and testtranslator.txt that had a small sample of 
+members.txt and translator.txt, respectively. I then used those as input files to
+test the loading functions in both classes. I also used those files to test
+MatchMaker. To test my Radix Tree, I first made a dummy implementation with a map,
+recorded the results, and then compared the results with my implemented RadixTree.
