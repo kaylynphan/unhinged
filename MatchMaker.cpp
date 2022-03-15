@@ -24,21 +24,21 @@ vector<EmailCount> MatchMaker::IdentifyRankedMatches(string email, int threshold
 		AttValPair avSource;
 		ppOfInterest->GetAttVal(i, avSource);
 		vector<AttValPair> compatiblesVec = m_at->FindCompatibleAttValPairs(avSource);
-		for (auto it = compatiblesVec.begin(); it != compatiblesVec.end(); it++) {
+		for (vector<AttValPair>::iterator it = compatiblesVec.begin(); it != compatiblesVec.end(); it++) {
 			membersToLookFor.insert(*it);
 		}
 	}
 
 	unordered_map<string, int> emailToMatchCount;
-	for (auto it = membersToLookFor.begin(); it != membersToLookFor.end(); it++) {
+	for (unordered_set<AttValPair, AVPairHash>::iterator it = membersToLookFor.begin(); it != membersToLookFor.end(); it++) {
 		vector<string> emailsWithMatchingPair = m_mdb->FindMatchingMembers(*it);
-		for (auto it1 = emailsWithMatchingPair.begin(); it1 != emailsWithMatchingPair.end(); it1++) {
+		for (vector<string>::iterator it1 = emailsWithMatchingPair.begin(); it1 != emailsWithMatchingPair.end(); it1++) {
 			if (*it1 != ppOfInterest->GetEmail()) emailToMatchCount[*it1]++;
 		}
 	}
 
 	vector<EmailCount> rankedMatches;
-	for (auto it = emailToMatchCount.begin(); it != emailToMatchCount.end(); it++) {
+	for (unordered_map<string, int>::iterator it = emailToMatchCount.begin(); it != emailToMatchCount.end(); it++) {
 		if (it->second >= threshold) rankedMatches.push_back(EmailCount(it->first, it->second));
 	}
 

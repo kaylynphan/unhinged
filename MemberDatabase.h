@@ -24,7 +24,7 @@ private:
 	RadixTree<vector<string>*>* m_attValToEmailRadixTree;
 	// had trouble deleting from the RadixTrees, a set storing each key helped
 	set<string>* m_emailSet;
-	set<string>* m_attvalSet;
+	set<string>* m_attValStringSet;
 };
 
 

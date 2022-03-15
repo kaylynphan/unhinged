@@ -10,7 +10,7 @@ AttributeTranslator::AttributeTranslator()
 
 AttributeTranslator::~AttributeTranslator()
 {
-	for (auto it = m_sources->begin(); it != m_sources->end(); it++) {
+	for (set<string>::iterator it = m_sources->begin(); it != m_sources->end(); it++) {
 		vector<AttValPair>** compatiblePairsVector = m_translationsRadixTree->search(*it);
 		if (compatiblePairsVector != nullptr) { // always true
 			delete (*compatiblePairsVector);

@@ -8,7 +8,7 @@ PersonProfile::PersonProfile(string name, string email)
 
 PersonProfile::~PersonProfile() {
 	// use the vector to 'iterate' through the RadixTree
-	for (auto it = m_attValVector.begin(); it != m_attValVector.end(); it++) {
+	for (vector<AttValPair*>::iterator it = m_attValVector.begin(); it != m_attValVector.end(); it++) {
 		set<string>* attSet = m_attValRadixTree->search((*it)->value);
 		if (attSet != nullptr) { 
 			delete attSet;

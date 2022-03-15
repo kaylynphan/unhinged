@@ -8,18 +8,18 @@ using namespace std;
 
 MemberDatabase::MemberDatabase()
 	: m_profilesRadixTree(new RadixTree<PersonProfile*>), m_attValToEmailRadixTree(new RadixTree<vector<string>*>),
-	m_emailSet(new set<string>), m_attvalSet(new set<string>)
+	m_emailSet(new set<string>), m_attValStringSet(new set<string>)
 {}
 
 MemberDatabase::~MemberDatabase()
 {
-	for (auto it = m_emailSet->begin(); it != m_emailSet->end(); it++) {
+	for (set<string>::iterator it = m_emailSet->begin(); it != m_emailSet->end(); it++) {
 		PersonProfile** pp = m_profilesRadixTree->search(*it);
 		if (pp != nullptr) { //always true
 			delete (*pp);
 		}
 	}
-	for (auto it = m_attvalSet->begin(); it != m_attvalSet->end(); it++) {
+	for (set<string>::iterator it = m_attValStringSet->begin(); it != m_attValStringSet->end(); it++) {
 		vector<string>** emails = m_attValToEmailRadixTree->search(*it);
 		if (emails != nullptr) { // always true
 			delete (*emails);
@@ -28,7 +28,7 @@ MemberDatabase::~MemberDatabase()
 	delete m_profilesRadixTree;
 	delete m_attValToEmailRadixTree;
 	delete m_emailSet;
-	delete m_attvalSet;
+	delete m_attValStringSet;
 }
 
 bool MemberDatabase::LoadDatabase(string filename)
@@ -68,7 +68,7 @@ bool MemberDatabase::LoadDatabase(string filename)
 					vector<string>* newVector = new vector<string>();
 					m_attValToEmailRadixTree->insert(attValKey, newVector);
 					emailsVector = m_attValToEmailRadixTree->search(attValKey);
-					m_attvalSet->insert(attValKey);
+					m_attValStringSet->insert(attValKey);
 				}
                 // because we process each profile once, we can guarantee there will be no duplicate emails here
                 // however, duplicates may appear when a member is matched twice to another member because they are compatible in more than one way
