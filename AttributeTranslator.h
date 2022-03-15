@@ -17,7 +17,7 @@ public:
 	vector<AttValPair> FindCompatibleAttValPairs(const AttValPair& source) const;
 	string toString();
 private:
-	RadixTree<vector<AttValPair>*>* m_translations;
+	RadixTree<vector<AttValPair>*>* m_translationsRadixTree;
 	set<string>* m_sources;
 };
 

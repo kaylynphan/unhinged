@@ -74,7 +74,6 @@ bool MemberDatabase::LoadDatabase(string filename)
 			getline(infile, emptyLine);
 		}
 	}
-	
 	return true;
 }
 

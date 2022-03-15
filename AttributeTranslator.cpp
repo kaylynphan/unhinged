@@ -5,46 +5,51 @@
 using namespace std;
 
 AttributeTranslator::AttributeTranslator()
-	: m_translations(new RadixTree<vector<AttValPair>*>), m_sources(new set<string>)
+	: m_translationsRadixTree(new RadixTree<vector<AttValPair>*>), m_sources(new set<string>)
 {}
 
 AttributeTranslator::~AttributeTranslator()
 {
 	for (auto it = m_sources->begin(); it != m_sources->end(); it++) {
-		vector<AttValPair>** compatibleVec = m_translations->search(*it);
-		if (compatibleVec != nullptr) { // always true
-			delete (*compatibleVec);
+		vector<AttValPair>** compatiblePairsVector = m_translationsRadixTree->search(*it);
+		if (compatiblePairsVector != nullptr) { // always true
+			delete (*compatiblePairsVector);
 		}
 	}
-	delete m_translations;
+	delete m_translationsRadixTree;
 	delete m_sources;
 }
 
 bool AttributeTranslator::Load(string filename)
 {
-	ifstream translatorFile(filename);
-	if (!translatorFile) {
+	ifstream infile(filename);
+	if (!infile) {
 		return false;
 	}
 
-	if (translatorFile.is_open()) {
-		string attSRead, valSRead, attCRead, valCRead, skip;
-		while (translatorFile.good()) {
-			getline(translatorFile, attSRead, ',');
-			getline(translatorFile, valSRead, ','); 
-			getline(translatorFile, attCRead, ',');
-			getline(translatorFile, valCRead);
+	if (infile.is_open()) {
+		string att1, val1, att2, val2, skip;
+		while (infile.good()) {
+			getline(infile, att1, ',');
+			getline(infile, val1, ','); 
+			getline(infile, att2, ',');
+			getline(infile, val2);
 
-			string sourcePair(attSRead + valSRead);
-			AttValPair compatiblePair(attCRead, valCRead);
-			vector<AttValPair>** compatibleVec = m_translations->search(sourcePair);
-			if (compatibleVec == nullptr) {
+            // reminder: Radix Tree m_translationsRadixTree uses [source attribute][source value] (concatenated string) as a key
+            string key = att1 + val1;
+            // see if the source pair is already in the translations RadixTree
+			vector<AttValPair>** compatiblePairsVector = m_translationsRadixTree->search(key);
+			if (compatiblePairsVector == nullptr) {
 				vector<AttValPair>* toInsert = new vector<AttValPair>;
-				m_translations->insert(sourcePair, toInsert);
-				compatibleVec = m_translations->search(sourcePair);
-				m_sources->insert(sourcePair);
+				m_translationsRadixTree->insert(key, toInsert);
+				compatiblePairsVector = m_translationsRadixTree->search(key);
+
+                //new unique source, insert into m_sources
+				m_sources->insert(key);
 			}
-			(*compatibleVec)->push_back(compatiblePair);
+            // at this point, the key must be in the Radix Tree
+            AttValPair compatiblePair(att2, val2);
+			(*compatiblePairsVector)->push_back(compatiblePair);
 		}
 	}
 	return true;
@@ -52,8 +57,8 @@ bool AttributeTranslator::Load(string filename)
 
 vector<AttValPair> AttributeTranslator::FindCompatibleAttValPairs(const AttValPair& source) const {
 	// reminder: keys are [source attribute][source value] (two concatenated strings)
-	string sourcePair = source.attribute + source.value;
-	vector<AttValPair>** compatibleAttValPairs = m_translations->search(sourcePair);
+	string key = source.attribute + source.value;
+	vector<AttValPair>** compatibleAttValPairs = m_translationsRadixTree->search(key);
 	if (compatibleAttValPairs != nullptr) {
 		return **compatibleAttValPairs;
 	}
@@ -64,7 +69,7 @@ vector<AttValPair> AttributeTranslator::FindCompatibleAttValPairs(const AttValPa
 /*
 string AttributeTranslator::toString() {
     string result = "";
-    map<string, vector<AttValPair>**> mp = m_translations->getMap();
+    map<string, vector<AttValPair>**> mp = m_translationsRadixTree->getMap();
     for (auto it = mp.begin(); it != mp.end(); it++) {
         result += "Source: " + it->first + '\n';
 		result += "Compatible:\n";
