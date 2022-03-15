@@ -1,4 +1,11 @@
-leave 
+Kaylyn Phan
+CS32 Winter 22
+Project 4 Report
 
-translator.txt, members.txt, provided.h untouched
-
+I was able to finish all of the project.
+I did not use any banned STL components
+you were unable to finish
+use banned STL components (since you didn’t have time to finish an implementation
+that doesn't use them)
+20
+have bugs that you have not yet been able to find/fix

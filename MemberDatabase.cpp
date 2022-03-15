@@ -2,7 +2,6 @@
 #include "provided.h"
 #include <fstream>
 #include <iostream>
-#include <sstream>
 
 using namespace std;
 
@@ -94,15 +93,3 @@ const PersonProfile* MemberDatabase::GetMemberByEmail(string email) const {
 	return nullptr;
 }
 
-// FOR DEBUGGING
-/*
-const string MemberDatabase::toString() {
-	string result = "";
-    map<string, PersonProfile**> mp = m_profilesRadixTree->getMap();
-    for (auto it = mp.begin(); it != mp.end(); it++) {
-        result += it->first + '\n';
-        result += (*(it->second))->toString();
-    }
-    return result;
-}
-*/

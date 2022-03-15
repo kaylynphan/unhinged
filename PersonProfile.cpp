@@ -57,17 +57,3 @@ bool PersonProfile::GetAttVal(int attribute_num, AttValPair& attval) const {
 	attval = *m_attValVector[attribute_num];
 	return true;
 }
-
-// FOR DEBUGGING
-/*
-const string PersonProfile::toString() {
-    string result = m_name + '\n';
-    auto it = m_attValVector.begin();
-    while (it != m_attValVector.end()) {
-        result += "Attribute: " + (*it)->attribute;
-        result += " Value: " + (*it)->value + '\n';
-        it++;
-    }
-    return result;
-}
-*/

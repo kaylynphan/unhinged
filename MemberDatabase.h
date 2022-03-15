@@ -1,10 +1,10 @@
 #ifndef _MEMBER_DATABASE_H_
 #define _MEMBER_DATABASE_H_
 
-#include <vector>
-#include <set>
 #include "PersonProfile.h"
 #include "RadixTree.h"
+#include <vector>
+#include <set>
 
 using namespace std;
 
@@ -17,7 +17,6 @@ public:
 	bool LoadDatabase(string filename);
 	vector<string> FindMatchingMembers(const AttValPair& input) const;
 	const PersonProfile* GetMemberByEmail(string email) const;
-	//const string toString();
 private:
 	RadixTree<PersonProfile*>* m_profilesRadixTree;
     // this is a vector because FindMatchingMember() returns a vector and this is easier

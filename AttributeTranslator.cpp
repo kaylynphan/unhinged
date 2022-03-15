@@ -63,19 +63,3 @@ vector<AttValPair> AttributeTranslator::FindCompatibleAttValPairs(const AttValPa
 	return vector<AttValPair>();
 }
 
-// FOR DEBUGGING
-/*
-string AttributeTranslator::toString() {
-    string result = "";
-    map<string, vector<AttValPair>**> mp = m_translationsRadixTree->getMap();
-    for (auto it = mp.begin(); it != mp.end(); it++) {
-        result += "Source: " + it->first + '\n';
-		result += "Compatible:\n";
-        vector<AttValPair> compatible = **(it->second);
-		for (int i = 0; i < compatible.size(); i++) {
-			result += compatible[i].attribute + compatible[i].value + "\n";
-		}
-    }
-    return result;  
-}
-*/

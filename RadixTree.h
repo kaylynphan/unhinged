@@ -1,7 +1,6 @@
 #ifndef _RADIX_TREE_H_
 #define _RADIX_TREE_H_
 
-#include <map>
 #include <string>
 
 using namespace std;

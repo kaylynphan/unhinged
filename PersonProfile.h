@@ -1,7 +1,6 @@
 #ifndef _PERSON_PROFILE_H_
 #define _PERSON_PROFILE_H_
 
-#include <string>
 #include "RadixTree.h"
 #include <vector>
 #include <set>
@@ -19,8 +18,6 @@ public:
 	void AddAttValPair(const AttValPair& attval);
 	int GetNumAttValPairs() const;
 	bool GetAttVal(int attribute_num, AttValPair& attval) const;
-	//FOR DEBUGGING
-	//const string toString();
 private:
 	string m_name;
 	string m_email;
