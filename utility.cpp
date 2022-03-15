@@ -1,8 +1,14 @@
-
 #include "utility.h"
-#include "provided.h"
 
-bool operator<(const AttValPair& av1, const AttValPair & av2) {
-    return (av1.attribute < av2.attribute  
-        ||  ((av1.attribute == av2.attribute) & (av1.value < av2.value)));
+using namespace std;
+
+unsigned int AVPairHash::operator()(const AttValPair& av) const
+{
+	hash<string> str_hash;
+	return str_hash(av.attribute + av.value);
+}
+
+
+bool comp(const EmailCount& ec1, const EmailCount& ec2) {
+	return (ec1.count > ec2.count || ((ec1.count == ec2.count) && (ec1.email < ec2.email)));
 }

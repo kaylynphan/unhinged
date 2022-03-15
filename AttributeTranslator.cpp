@@ -1,74 +1,77 @@
 #include "AttributeTranslator.h"
-#include "utility.h"
-#include <map>
-#include <vector>
-#include <iostream>
 #include <fstream>
-#include <sstream>
+#include <iostream>
 
 using namespace std;
 
-AttributeTranslator::AttributeTranslator() {
-    // we may have to do nothing here
+AttributeTranslator::AttributeTranslator()
+	: m_rtreePairToPair(new RadixTree<vector<AttValPair>*>), m_sourceAttvalSet(new set<string>)
+{}
+
+AttributeTranslator::~AttributeTranslator()
+{
+	for (auto it = m_sourceAttvalSet->begin(); it != m_sourceAttvalSet->end(); it++) {
+		vector<AttValPair>** compatibleVec = m_rtreePairToPair->search(*it);
+		if (compatibleVec != nullptr) { // always true
+			delete (*compatibleVec);
+		}
+	}
+	delete m_rtreePairToPair;
+	delete m_sourceAttvalSet;
 }
 
-AttributeTranslator::~AttributeTranslator() {
-    // we may have to do nothing here
-}
+bool AttributeTranslator::Load(string filename)
+{
+	ifstream translatorFile(filename);
+	if (!translatorFile) {
+		return false;
+	}
 
-bool AttributeTranslator::Load(string filename) {
-    ifstream infile(filename);
-    if (!infile) {
-        return false;
-    }
-    string line;
-    while (getline(infile, line)) {
-        istringstream iss(line);
-        string att1;
-        string val1;
-        string att2;
-        string val2;
-        getline(iss, att1, ',');
-        getline(iss, val1, ',');
-        getline(iss, att2, ',');
-        getline(iss, val2);
-        if ((att1 != "") && (att2 != "") && (val1 != "") && (val2 != "")) {
-            AttValPair avPair1(att1, val1);
-            AttValPair avPair2(att2, val2);
-            map<AttValPair, vector<AttValPair> >::iterator it = m_translations.find(avPair1);
-            if (it != m_translations.end()) {
-                it->second.push_back(avPair2);
-            } else {
-                vector<AttValPair> newvector;
-                newvector.push_back(avPair2);
-                m_translations.insert(pair<AttValPair, vector<AttValPair> >(avPair1, newvector));
-            }
-        } else {
-            cout << "Incomplete line" << endl;
-            break;
-        }
-    }
-    return true;
+	if (translatorFile.is_open()) {
+		string attSRead, valSRead, attCRead, valCRead, skip;
+		while (translatorFile.good()) {
+			getline(translatorFile, attSRead, ',');
+			getline(translatorFile, valSRead, ','); 
+			getline(translatorFile, attCRead, ',');
+			getline(translatorFile, valCRead);
+
+			string sourcePair(attSRead + valSRead);
+			AttValPair compatiblePair(attCRead, valCRead);
+			vector<AttValPair>** compatibleVec = m_rtreePairToPair->search(sourcePair);
+			if (compatibleVec == nullptr) {
+				vector<AttValPair>* toInsert = new vector<AttValPair>;
+				m_rtreePairToPair->insert(sourcePair, toInsert);
+				compatibleVec = m_rtreePairToPair->search(sourcePair);
+				m_sourceAttvalSet->insert(sourcePair);
+			}
+			(*compatibleVec)->push_back(compatiblePair);
+		}
+	}
+	return true;
 }
 
 vector<AttValPair> AttributeTranslator::FindCompatibleAttValPairs(const AttValPair& source) const {
-    return m_translations.find(source)->second;
+	string sourcePair = source.attribute + source.value;
+	vector<AttValPair>** compatibleVec = m_rtreePairToPair->search(sourcePair);
+	if (compatibleVec != nullptr) {
+		return **compatibleVec;
+	}
+	return vector<AttValPair>();
 }
 
+// FOR DEBUGGING
+/*
 string AttributeTranslator::toString() {
     string result = "";
-    map<AttValPair, vector<AttValPair> >::iterator it = m_translations.begin();
-    while (it != m_translations.end()) {
-        result += "Source:\n" + it->first.attribute + ": " + it->first.value + "\n";
-        result += "Matches\n";
-        vector<AttValPair>::iterator match = it->second.begin();
-        while (match != it->second.end()) {
-            result += match->attribute + ": " + match->value + "\n";
-            match++;
-        }
-        result += "\n";
-        it++;
+    map<string, vector<AttValPair>**> mp = m_rtreePairToPair->getMap();
+    for (auto it = mp.begin(); it != mp.end(); it++) {
+        result += "Source: " + it->first + '\n';
+		result += "Compatible:\n";
+        vector<AttValPair> compatible = **(it->second);
+		for (int i = 0; i < compatible.size(); i++) {
+			result += compatible[i].attribute + compatible[i].value + "\n";
+		}
     }
-    return result;
-    
+    return result;  
 }
+*/

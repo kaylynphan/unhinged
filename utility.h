@@ -1,8 +1,14 @@
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 
+#include <functional>
 #include "provided.h"
 
-bool operator<(const AttValPair& av1, const AttValPair & av2);
+class AVPairHash {
+public:
+	unsigned int operator()(const AttValPair& av) const;
+};
+
+bool comp(const EmailCount& ec1, const EmailCount& ec2);
 
 #endif
