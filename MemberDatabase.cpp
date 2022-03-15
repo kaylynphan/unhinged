@@ -33,73 +33,29 @@ MemberDatabase::~MemberDatabase()
 
 bool MemberDatabase::LoadDatabase(string filename)
 {
-	/*
-	ifstream infile(filename);
-    if (!infile) {
-        return false;
-    }
-    bool keepReading = true;
-    while (keepReading) {
-        string name;
-        getline(infile, name);
-        string email;
-
-		if (m_rtreeEmailToProfile->search(email) != nullptr) {
-			return false;
-		}
-		m_emailSet->insert(email);
-
-        getline(infile, email);
-        int numAVPairs = 0;
-        string line;
-        getline(infile, line);
-        istringstream iss(line);
-        PersonProfile* toAdd = new PersonProfile(name, email);
-        iss >> numAVPairs;
-        iss.ignore(1000, '\n');
-        for (int i = 0; i < numAVPairs; i++) {
-            getline(infile, line);
-            istringstream iss(line);
-            string att;
-            string val;
-            getline(iss, att, ',');
-            getline(iss, val, ',');
-			toAdd->AddAttValPair(AttValPair(att, val));
-			string attValKey = att + val;
-			vector<string>** emailVec = m_rtreeAttValToEmails->search(attValKey);
-			if (emailVec == nullptr) {
-				vector<string>* newVector = new vector<string>();
-				m_rtreeAttValToEmails->insert(attValKey, newVector);
-				emailVec = m_rtreeAttValToEmails->search(attValKey);
-				m_attvalSet->insert(attValKey);
-			}
-			(*emailVec)->push_back(email);
-        }
-        m_rtreeEmailToProfile->insert(email, toAdd);
-        string emptyLine;
-        keepReading = static_cast<bool>(getline(infile, emptyLine));
-    }
-	*/
-
-	
 	ifstream infile(filename);
 	if (!infile) {
 		return false;
 	}
 	if (infile.is_open()) {
-		string name, email, att, val, skip;
-		int attvalCount = 0;
+		string name;
+		string email; 
+		string emptyLine;
+		int numAVPairs = 0;
 		while (infile.good()) {
 			getline(infile, name);
 			getline(infile, email);
+			// do i need to check for duplicate emails?
 			if (m_rtreeEmailToProfile->search(email) != nullptr) {
 				return false;
 			}
 			m_emailSet->insert(email);
 			PersonProfile* ppToAdd = new PersonProfile(name, email);
-			infile >> attvalCount;
-			getline(infile, skip);
-			for (int i = 0; i != attvalCount; i++) {
+			infile >> numAVPairs;
+			getline(infile, emptyLine);
+			for (int i = 0; i != numAVPairs; i++) {
+				string att;
+				string val;
 				getline(infile, att, ',');
 				getline(infile, val);
 				ppToAdd->AddAttValPair(AttValPair(att, val));
@@ -114,8 +70,8 @@ bool MemberDatabase::LoadDatabase(string filename)
 				}
 				(*emailVec)->push_back(email);
 			}
-			getline(infile, skip);
 			m_rtreeEmailToProfile->insert(email, ppToAdd);
+			getline(infile, emptyLine);
 		}
 	}
 	

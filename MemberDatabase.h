@@ -21,6 +21,7 @@ public:
 private:
 	RadixTree<PersonProfile*>* m_rtreeEmailToProfile;
 	RadixTree<vector<string>*>* m_rtreeAttValToEmails;
+	// had trouble deleting from the RadixTrees, a set helped
 	set<string>* m_emailSet;
 	set<string>* m_attvalSet;
 };
